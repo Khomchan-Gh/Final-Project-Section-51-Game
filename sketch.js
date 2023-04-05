@@ -27,6 +27,8 @@ function setup() {
 
 function draw() {
   
+  clear();
+  
   if (currentScreen === "menu") {
     drawMenuScreen();
   
@@ -76,7 +78,7 @@ function drawGamePlayScreen() {
   
   AtkButton.mousePressed(() => { ue = cecilia.attack1(ue); cecilia.attackAnimation();});
   cecilia.update();
- 
+
   SkillButton.mousePressed(() => {ue = cecilia.skill1(ue); cecilia.skillAnimation();});
   cecilia.update();
   

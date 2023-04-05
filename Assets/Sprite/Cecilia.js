@@ -44,12 +44,12 @@ class Cecilia {
     skill1(ue){
       ue.hp = ue.hp - 50;
       ue.hp = ue.hp - 50;
+      this.skillCasted();
       return ue;
     }
 
-    skillCasted(cecilia){
+    skillCasted(){
       this.mp = this.mp -50;
-      return cecilia;
     }
 
     skillAnimation(){
@@ -70,6 +70,7 @@ class Cecilia {
       }
 
       if (this.castingSkill) {
+ 
         let timeSinceSkillCasted = millis() - this.castStartTime;
         if (timeSinceSkillCasted < this.castDuration) {
           // this.CeciliaSkill.pause();

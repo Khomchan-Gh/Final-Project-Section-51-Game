@@ -35,6 +35,12 @@ function attackButton(){
     SkillButton.style('left', '65%');
     SkillButton.style('top', '87%');
     SkillButton.style('transform', 'translate(-50%, -50%)');
+
+    if (cecilia.mp >= 50) {
+      SkillButton.removeAttribute('disabled');
+    } else {
+      SkillButton.attribute('disabled', 'true');
+    }
     
   }
   

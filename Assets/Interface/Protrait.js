@@ -1,6 +1,6 @@
 function chrProtrait (){
   
-    image(ceciliaProtrait,-300,380);
-    ceciliaProtrait.resize(900,968);
+    image(ceciliaProtrait,-200,300);
+    ceciliaProtrait.resize(708,1002);
     
   }
