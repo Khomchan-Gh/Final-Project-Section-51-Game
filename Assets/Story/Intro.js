@@ -25,7 +25,8 @@ if (currentText < totalTexts -1){
  currentText++;
   
 }else{ currentScreen = "gameplay";
-
+currentText = -3;
+console.log(currentText);
 }
 
 }

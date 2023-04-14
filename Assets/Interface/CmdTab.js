@@ -6,6 +6,7 @@ function attackButton(){
     ueHp.hp = 1500;
     
     AtkButton = createButton('Attack');
+    AtkButton.addClass('hidden2');
     AtkButton.position(0, 0);
     AtkButton.size(200,50);
     AtkButton.style('background-color', 'transparent');
@@ -17,13 +18,15 @@ function attackButton(){
     AtkButton.style('left', '45%');
     AtkButton.style('top', '87%');
     AtkButton.style('transform', 'translate(-50%, -50%)');
-  
+    // AtkButton.addClass('Test-Class')
+
   }
   
   
   function skillButton(){
     
     SkillButton = createButton('Skill');
+    SkillButton.addClass('hidden2');
     SkillButton.position(0, 0);
     SkillButton.size(200,50);
     SkillButton.style('background-color', 'transparent');
@@ -36,17 +39,12 @@ function attackButton(){
     SkillButton.style('top', '87%');
     SkillButton.style('transform', 'translate(-50%, -50%)');
 
-    if (cecilia.mp >= 50) {
-      SkillButton.removeAttribute('disabled');
-    } else {
-      SkillButton.attribute('disabled', 'true');
-    }
-    
   }
   
   function spButton(){
     
     SpButton = createButton('Special');
+    SpButton.addClass('hidden2');
     SpButton.position(0, 0);
     SpButton.size(200,50);
     SpButton.style('background-color', 'transparent');

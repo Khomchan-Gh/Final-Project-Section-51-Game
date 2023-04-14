@@ -4,8 +4,11 @@ class Cecilia {
       
       this.x = 50
       this.y = 0
+      this.maxhp = 500
       this.hp = 500
+      this.maxmp = 250
       this.mp = 250
+      this.maxsp = 10
       this.sp = 10
       this.CeciliaStandBy = ceciliaStandby
       this.CeciliaAtk = ceciliaAttack
@@ -22,7 +25,7 @@ class Cecilia {
       show(){
       
       if (this.isAttacking === false && this.castingSkill === false){
-      image(this.CeciliaStandBy,50,0, 546, 584)
+      image(this.CeciliaStandBy,50,0, width*0.35, height*0.8)
       };
     
     }
@@ -43,7 +46,8 @@ class Cecilia {
 
     skill1(ue){
       ue.hp = ue.hp - 50;
-      ue.hp = ue.hp - 50;
+      //แก้เลขทีหลัง 
+      ue.hp = ue.hp - 200;
       this.skillCasted();
       return ue;
     }
@@ -60,10 +64,9 @@ class Cecilia {
     
     update() {
       if (this.isAttacking) {
-        let timeSinceAttackStarted = millis() - this.attackStartTime;
         if (timeSinceAttackStarted < this.attackDuration) {
           this.CeciliaAtk.resize(546, 584);
-          image(this.CeciliaAtk, 400, 0);
+          image(this.CeciliaAtk, 400, 0, width*0.35,height*0.8);
         } else {
           this.isAttacking = false;
         }
@@ -73,8 +76,7 @@ class Cecilia {
  
         let timeSinceSkillCasted = millis() - this.castStartTime;
         if (timeSinceSkillCasted < this.castDuration) {
-          // this.CeciliaSkill.pause();
-          image(this.CeciliaSkill, 400, 0, 546, 584);
+          image(this.CeciliaAtk, 400, 0, width*0.35,height*0.8);
         } else {
           this.castingSkill = false;
         }
