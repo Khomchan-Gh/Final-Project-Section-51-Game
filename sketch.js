@@ -4,21 +4,31 @@ let cecilia;
 let AtkButton, SkillButton, SpButton;
 let ue;
 let ueHp;
+let novecentoBold, novecentoNormal, novecentoLight;
 let actionDelay;
 let screenDelay;
+let buttonCreated = false;
+
 
 function preload() {
   
   menuTitle = loadFont('Assets/Fonts/Novecento Bold.otf');
+  novecentoBold = loadFont('Assets/Fonts/Novecento Bold.otf');
+  novecentoNormal = loadFont('Assets/Fonts/Novecento Normal.otf');
+  novecentoLight = loadFont('Assets/Fonts/Novecento Light.otf');
   ceciliaStory = loadGif('Assets/Characters/ceciliaIdle_1.gif');
   // ceciliaStandby = loadGif('Assets/Characters/ceciliaStandBy_1.gif');
   ceciliaStandby = loadImage('Assets/Characters/Cecilia-Stance1.png');
   ceciliaAttack = loadImage('Assets/Characters/ceciliaAtk_1.png');
+  ceciliaAssault = loadImage('Assets/Characters/Cecilia-Assault.png');
+  ceciliaOverDrive = loadImage('Assets/Characters/Cecilia-OverDrive.png');
   // ceciliaSkill = loadGif('Assets/Characters/ceciliaSkillTest.gif')
   ceciliaSkill = loadImage('Assets/Characters/Cecilia-Stance2.png');
-  stageBg = loadImage('Assets/Background/testbg.jpg');
+  mainmenuBg = loadImage('Assets/Background/mainmenu.png')
+  stageBg = loadImage('Assets/Background/Stage-Bg.png');
   uE = loadImage('Assets/Enemy/Unknown_Entity_NO8.png');
-  ceciliaProtrait = loadImage('Assets/Image/Cecilia_2.png');
+  ceciliaProtrait = loadImage('Assets/Image/Cecilia.png');
+  ceciliaProtraitOverDrive = loadImage('Assets/Image/Cecilia-Portrait-OverDrive.png');
 
 }
 
@@ -34,16 +44,20 @@ function setup() {
 function draw() {
   
   clear();
-  console.log(currentScreen);
 
   if (currentScreen === "menu") {
     drawMenuScreen();
-  
+    if (!buttonCreated){
+  playButton();
+  buttonCreated = true;
+    }
   }
   
   if (currentScreen === "intro") {
     drawIntroScreen();
-    
+    if (buttonCreated){
+      buttonCreated = false;
+        }
   }
   
   if (currentScreen === "gameplay") {
@@ -53,22 +67,33 @@ function draw() {
   
   if (currentScreen === "ending_1") {
     drawEnding1();
+    if (buttonCreated){
+      buttonCreated = false;
+        }
 
   }
 
   if (currentScreen === "ending_2") {
     drawEnding2();
+    if (buttonCreated){
+      buttonCreated = false;
+        }
     
   }
 
   if (currentScreen === "ending_3") {
     drawEnding3();
+    if (buttonCreated){
+      buttonCreated = false;
+        }
     
   }
   
   if (currentScreen === "game_over") {
     gameOver();
-    
+    if (buttonCreated){
+      buttonCreated = false;
+        }
   }
   
 
@@ -79,7 +104,8 @@ function draw() {
 function drawMenuScreen() {
   background(30);
   title();
-  playButton();
+  // if (!buttonCreated)
+  // playButton();
   var elements = document.getElementsByClassName("hidden3");
 
   for (let i = 0; i < elements.length; i++) {
@@ -102,9 +128,15 @@ function drawIntroScreen() {
 function drawGamePlayScreen() {
   
   background(0);
+
+  var elements = document.getElementsByClassName("hiddenI");
+
+  for (let i = 0; i < elements.length; i++) {
+    elements[i].style.display = "none";
+  }
   
-  stageBg.resize(1280,550)
-  image(stageBg,0,0)
+  stageBg.resize(1403,992)
+  image(stageBg,-123,-450)
   cecilia.show();
   ue.show();
   
@@ -112,14 +144,29 @@ function drawGamePlayScreen() {
   rectMode(CENTER);
   fill(0);
   rect(width/2,650,windowWidth,230)
-  skillButton();
-  spButton();
-  attackButton();
-  chrProtrait();
+ 
+  if (!cecilia.isOverDrive){
+  ceciliaDefaultPortrait();
+  }
+
+  if (cecilia.isOverDrive){
+    ceciliaOverDrivePortrait();
+    }
+  
+  //Call Status
+  statusSpAttackGauge()
   statusHp();
   statusMp();
   statusSp();
   ceciliaName();
+
+  if(!buttonCreated) {
+    skillButton();
+    spButton();
+    attackButton();
+    spAttackButton();
+    buttonCreated = true;
+  }
 
   var elements = document.getElementsByClassName("hidden3");
 
@@ -136,35 +183,95 @@ function drawGamePlayScreen() {
       }
 
       isPlayerTurn = true;
-      cecilia.hp = cecilia.maxhp;
-      cecilia.mp = cecilia.maxmp;
-      cecilia.sp = cecilia.maxsp;
+      cecilia.startOver();
       ue.hp = ue.maxhp;
 
-    }
-
-  if (isPlayerTurn) {
+  }
+  
+    if (isPlayerTurn) {
 
     actionDelay = 0;
 
     textAlign(CENTER);
     text("Your Turn", width/2, 100)
+    
+    
+    // Attack Command
+    
     AtkButton.removeAttribute('disabled');
-    AtkButton.mousePressed(() => { ue = cecilia.attack1(ue); isPlayerTurn = false;});
+    AtkButton.mousePressed(() => { ue = cecilia.attack1(ue); isPlayerTurn = false; cecilia.overDriveCheckReset();});
     cecilia.update();
 
-    SkillButton.removeAttribute('disabled');
-    SkillButton.mousePressed(() => {ue = cecilia.skill1(ue); isPlayerTurn = false;});
+    // Switch Command
+    
+    
+    SkillButton.mousePressed(() => {cecilia.isAssaultMode = !cecilia.isAssaultMode; cecilia.assaultMode();});
     cecilia.update();
     
-    if (cecilia.mp >= 50) {
-      SkillButton.removeAttribute('disabled');
-    } else {
+    if (cecilia.isAssaultMode && cecilia.mp < cecilia.assaultModeAttackMpCost) {
+      cecilia.isAssaultMode = false;
+    }
+
+    if (cecilia.isAssaultMode && cecilia.mp < cecilia.assaultModeAttackMpCost || cecilia.assaultActiveTurn > cecilia.assaultModeMaximumTurn) {
+      cecilia.isAssaultMode = false;
+    }
+
+    if (cecilia.isAssaultMode || cecilia.isOverDrive || cecilia.mp < cecilia.assaultModeActivateMpCost || cecilia.assaultActiveTurn > cecilia.assaultModeMaximumTurn) {
       SkillButton.attribute('disabled', 'true');
+      SkillButton.style('color', 'grey');
+    } else {
+      SkillButton.removeAttribute('disabled');
+      SkillButton.style('color', 'white');
+  }
+
+    //Overdrive Command
+    
+
+    // SpButton.mousePressed(() => {cecilia.isOverDrive = !cecilia.isOverDrive; cecilia.overDrive();});
+    if (!cecilia.isOverDrive) {
+      SpButton.mousePressed(() => {cecilia.isOverDrive = true; cecilia.overDrive(); cecilia.overDriveCheckActivate(); cecilia.isAssaultMode = false;});
+      cecilia.update();
     }
     
+    if (cecilia.isOverDrive) {
+      SpButton.mousePressed(() => {cecilia.isOverDrive = false; cecilia.overDriveCheckActivate();});
+      cecilia.update();
+    }
+
+    if (cecilia.isOverDrive && cecilia.sp < cecilia.overDriveActivateCost) {
+      cecilia.isOverDrive = false;
+      cecilia.overLoaded();
+    }
+
+    if (cecilia.isAssaultMode || cecilia.sp < cecilia.overDriveActivateCost || cecilia.isChangedToOverDrive === true || cecilia.isOverLoaded) {
+      SpButton.attribute('disabled', 'true');
+      SpButton.style('color', 'grey');
+    } else {
+      SpButton.removeAttribute('disabled');
+      SpButton.style('color', 'white');
+    }
+
+    SpAttackButton.mousePressed(() => { ue = cecilia.attack2(ue); isPlayerTurn = false; if(cecilia.isOverDrive) {cecilia.overDriveCheckReset();};});
+    cecilia.update();
+
+    
+    if(cecilia.isOverLoaded || cecilia.gauge !== cecilia.maxgauge){
+      SpAttackButton.attribute('disabled', 'true');
+      SpAttackButton.style('color', 'grey');
+    }else{
+      SpAttackButton.removeAttribute('disabled');
+      SpAttackButton.style('color', 'white');
+    }
+    // if (cecilia.isChangedToOverDrive === false) {
+    //   SpButton.removeAttribute('disabled');
+    // }
+    
+    console.log(cecilia.isOverLoaded);
+    console.log(cecilia.overLoadedStartTurn);
+    console.log(SpButton);
+
   }
-  
+
 
   if (!isPlayerTurn) {
 
@@ -183,6 +290,8 @@ function drawGamePlayScreen() {
       }
         
 }
+
+
 
 function drawEnding1() {
   
@@ -245,6 +354,7 @@ function returnToTitle () {
   
   returnButton.mousePressed(() => {
     currentScreen = "menu";
+    fadeOut();
     // console.log(currentScreen);
   });
     

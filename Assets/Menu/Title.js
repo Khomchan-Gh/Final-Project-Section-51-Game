@@ -1,9 +1,16 @@
 function title(){
-  
-    textFont (menuTitle);
-    textSize (64);
-    textAlign(CENTER)
-    fill(255,255,255)
-    text('Sector-51 : Side Story',width/2,height/4)
     
-  }
+    image(mainmenuBg,0,0)
+    textFont(novecentoBold);
+    textAlign(LEFT);
+    textSize(64);
+    fill(0);
+    text('Sector-51',width/14,height/4)
+    
+    textFont(novecentoNormal);
+    textAlign(LEFT);
+    textSize(48);
+    fill(0);
+    text('Side Story',width/14,height/4+50)
+    
+  };
