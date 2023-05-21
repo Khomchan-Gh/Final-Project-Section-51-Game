@@ -10,7 +10,7 @@ class UE {
 
       //Hp bar value
       this.maxhp = 15000
-      this.hp = 100
+      this.hp = 15000
 
       this.maxHpBarWidth = 400;
       this.maxHpBarHeight = 14;
