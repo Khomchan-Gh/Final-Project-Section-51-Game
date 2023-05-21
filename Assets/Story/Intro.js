@@ -5,7 +5,7 @@ let texts = ["Hello, my name is Cecilia and this is a prototype of the game ", "
 
 function intro() {
 
-image(ceciliaStory, 0, 20, 619, 877);
+image(ceciliaProtrait, width * 0.02, height * 0.02, 619, 877);
 
 noStroke();
 rectMode(CENTER);
@@ -16,50 +16,35 @@ textAlign(LEFT);
 textSize(24);
 textLeading(40);
 fill(255);
+textFont(novecentoNormal)
 text(texts[currentText], 60, 470);
 
-nextButton = createButton('Next');
+nextButton = createButton('Next >');
 nextButton.addClass('hiddenI');
 nextButton.position(0, 0);
 nextButton.size(200,50);
-nextButton.style('color', 'white');
+nextButton.style('color', color(211));
 nextButton.style('background-color', 'transparent');
 nextButton.style('border', 'none');
-nextButton.style('font-size', '24px');
-nextButton.style('font-family', 'Novecento Normal');
+nextButton.style('font-size', '16px');
+nextButton.style('font-family', 'Novecento Light');
 nextButton.style('position', 'absolute');
-nextButton.style('left', '90%');
-nextButton.style('top', '90%');
+nextButton.style('left', '50%');
+nextButton.style('top', '95%');
 nextButton.style('transform', 'translate(-50%, -50%)');
-// nextButton.mouseOver(hovered);
-// nextButton.mouseOut(unHovered);
 nextButton.mousePressed(() => { 
     if (currentText < totalTexts -1){
     currentText++;
         }else{ 
         nextButton.style.display = "none";
         fadeOutScreen(() => {
-        currentScreen = "gameplay";
-        fadeInScreen();
-        currentText = -3; 
+          currentScreen = "gameplay";
+          fadeInScreen();
+        currentText = 0; 
      });
-   console.log(currentText);
+
 }
 }); 
 
 }
-      
-
-// function mousePressed() {
-// if (currentText < totalTexts -1){
-//  currentText++;
-  
-// }else{ fadeOutScreen(() => {
-//     currentScreen = "gameplay";
-//     fadeInScreen();
-//     currentText = -3;
-//   });
-// console.log(currentText);
-// }
-
 

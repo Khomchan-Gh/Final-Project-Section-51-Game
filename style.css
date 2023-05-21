@@ -16,6 +16,10 @@ canvas {
     height: 1080px;
 }
 
+/* .SkillButton:disabled {
+  background-image: url(Assets/Button/Switch-Mode-Disable.png);
+} */
+
 /* .hidden {
   display: none;
 } */

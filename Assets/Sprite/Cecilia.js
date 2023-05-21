@@ -4,24 +4,71 @@ class Cecilia {
     
     this.x = this.x
     this.y = this.y
+
+
+    //Hp bar value
+    this.maxHpBarWidth = 200;
+    this.maxHpBarHeight = 10;
+    this.hpBarWidth = 193;
+    this.hpBarHeight = 6;
+    
     this.maxhp = 500
     this.hp = 500
     this.minhp = 0
+
+    //Mp bar value
+    this.maxMpBarWidth = 200;
+    this.maxMpBarHeight = 6;
+    this.mpBarWidth = 193;
+    this.mpBarHeight = 2;
+
     this.maxmp = 300
     this.mp = 300
-    this.minmp = 0
+    this.minmp = 300
+
+    //Sp bar value
+    this.maxSpBarWidth = 200;
+    this.maxSpBarHeight = 6;
+    this.spBarWidth = 193;
+    this.spBarHeight = 2;
+
     this.maxsp = 100
     this.sp = 100
     this.minsp = 0
+
+    //Sp Atk bar value
+    this.maxSpAtkBarWidth = 50;
+    this.maxSpAtkBarHeight = 6;
+    this.gaugeBarWidth = 47;
+    this.gaugeBarHeight = 2;
+
     this.maxgauge = 100
     this.gauge = 0
-    this.mingauge =0
+    this.mingauge = 0
+
+    this.maxNormalAttackDMG = 62
+    this.minNormalAttackDMG = 47
+
+    this.maxAssaultDMG = 93
+    this.minAssaultDMG = 70
+
+    this.maxOverDriveDMG = 186
+    this.minOverDriveDMG = 140
     
+    //Load sprite
     this.CeciliaStandBy = ceciliaStandby
     this.CeciliaAtk = ceciliaAttack
     this.CeciliaSkill = ceciliaSkill
     this.CeciliaAssault = ceciliaAssault
     this.CeciliaOverDrive = ceciliaOverDrive
+
+    //Character Status & Animation
+    this.isAttacked = false;
+    this.isHeavyDamaged = false;
+    this.Death = false;
+
+    this.isAttacking = false;
+    this.isSwitching = false;
     
     //Assault mode cost
 
@@ -36,6 +83,7 @@ class Cecilia {
 
     //Overdrive cost
     this.overDriveActivateCost = 10;
+    this.overDriveMinAttackCost = 1;
     this.overDriveAttackCost = 1;
 
     //Overdrive state check
@@ -46,11 +94,13 @@ class Cecilia {
     this.overLoadedActiveTurn = 1;
     this.overLoadedEnd = 0;
 
-    this.isAttacking = false;
-    this.isSwitching = false;
     this.isAssaultMode = false;
     this.isOverDrive = false;
     this.isOverLoaded = false;
+
+    //Damage calc & display
+    this.damageDealt = this.damageDealt;
+
 
     // this.attackStartTime = 0;
     // this.attackDuration = 750;
@@ -68,14 +118,15 @@ class Cecilia {
   }
 
   attack1(ue){
-    
-    let attackPower = Math.floor(Math.random() * (62 - 47 + 1)) + 47;
+
+    let attackPower = Math.floor(Math.random() * (this.maxNormalAttackDMG  - this.minNormalAttackDMG  + 1)) + this.minNormalAttackDMG ;
     let critChance = Math.random(); // generate a random number between 0 and 1
     let critMultiplier = 1; // default multiplier is 1
         
     // Check if the attack is a critical hit
-    if (critChance <= 0.2 && attackPower >= 70 && attackPower <= 93) {
+    if (critChance <= 0.2 && attackPower >= this.minNormalAttackDMG && attackPower <= this.maxNormalAttackDMG) {
       critMultiplier = 1.5;
+
     }
 
     if (!this.isAssaultMode) {
@@ -98,13 +149,13 @@ class Cecilia {
     }
     
     if (this.isAssaultMode) {
-      attackPower = Math.floor(Math.random() * (93 - 70 + 1)) + 70;
+      attackPower = Math.floor(Math.random() * (this.maxAssaultDMG - this.minAssaultDMG + 1)) + this.minAssaultDMG;
       this.mp -= this.assaultModeAttackMpCost;
       cecilia.assaultModeTurnCount();
 
       // Set the crit chance and multiplier for assault mode
       critChance = Math.random(); // generate a random number between 0 and 1
-      if (critChance <= 0.5 && attackPower >= 70 && attackPower <= 93) {
+      if (critChance <= 0.5 && attackPower >= this.minAssaultDMG && attackPower <= this.maxAssaultDMG) {
         critMultiplier = 2.5;
       }
 
@@ -123,7 +174,7 @@ class Cecilia {
     }
     
     if (this.isOverDrive) {
-      attackPower = Math.floor(Math.random() * (186 - 140 + 1)) + 140;
+      attackPower = Math.floor(Math.random() * (this.maxOverDriveDMG - this.minOverDriveDMG + 1)) + this.minOverDriveDMG;
       this.sp -= this.overDriveAttackCost;
       this.overDriveAttackCost += 5;
       if (this.sp < this.minsp){
@@ -145,7 +196,7 @@ class Cecilia {
       }
 
       this.isChangedToOverDrive = false;
-      console.log("Overdrive damage dealt: " + attackPower * critMultiplier);
+      // console.log("Overdrive damage dealt: " + attackPower * critMultiplier);
     }
 
     if (this.isOverLoaded) {
@@ -157,8 +208,9 @@ class Cecilia {
       }
     }
 
-    let damage = Math.floor(attackPower * critMultiplier); // calculate the damage
-    ue.hp -= damage; // subtract damage from enemy's HP
+    this.damageDealt = Math.floor(attackPower * critMultiplier); // calculate the damage
+      
+    ue.hp -= this.damageDealt; // subtract damage from enemy's HP
     return ue; // return the updated enemy object
     
 }
@@ -255,11 +307,11 @@ attack2(ue){
       // console.log("Overdrive damage dealt: " + attackPower * critMultiplier);
     }
 
-  
-    let damage = Math.floor(attackPower * critMultiplier);
-  ue.hp -= damage;
+    this.damageDealt = Math.floor(attackPower * critMultiplier);
+  ue.hp -= this.damageDealt;
   return ue;
 }
+
   // attackAnimation(){
   //   this.isAttacking = true;
   //   this.attackStartTime = millis();
@@ -303,10 +355,15 @@ attack2(ue){
     this.hp = this.maxhp
     this.mp = this.maxmp
     this.sp = this.maxsp
+    this.gauge = this.mingauge
+    this.overDriveAttackCost = this.overDriveMinAttackCost;
+    this.assaultActiveTurn = this.assaultStartTurn;
+  
     this.isAttacking = false;
     this.isSwitching = false;
     this.isAssaultMode = false;
     this.isOverDrive = false;
+    this.isOverLoaded = false;
   }
 
   overLoaded(){
